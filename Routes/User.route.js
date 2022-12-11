@@ -8,6 +8,9 @@ const Usermodel = require("../Models/User..model");
 
 
 const UserRouter=express.Router();
+UserRouter.get("/",(req,res)=>{
+    res.send("api working")
+}
 
 UserRouter.post("/signup",async(req,res)=>{
     const {email,password,name ,age}=req.body;
