@@ -7,7 +7,7 @@ const noteSchema = mongoose.Schema({
     userID : String,
 })
 
-const NoteModel = mongoose.model("note", noteSchema)
+const NoteModel = mongoose.model("notes", noteSchema)
 
 module.exports = {
     NoteModel
