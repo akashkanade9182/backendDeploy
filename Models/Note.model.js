@@ -1,14 +1,13 @@
-const mongoose = require("mongoose")
+const mongoose=require("mongoose");
 
-const noteSchema = mongoose.Schema({
-    title : String,
-    note : String,
-    category : [],
-    userID : String,
+
+const noteSchema=mongoose.Schema({
+    title:{type:String,require:false},
+    userId:String,
+    Content:{type:String,require:false},
+    Tags:{type:String,require:false}
 })
 
-const NoteModel = mongoose.model("notes", noteSchema)
+const Notemodel=mongoose.model("notes",noteSchema)
 
-module.exports = {
-    NoteModel
-}
+module.exports=Notemodel;
