@@ -1,67 +1,65 @@
 const express=require("express")
-const mogoose=require("mongoose");
 const bcrypt = require('bcrypt');
-const  jwt = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
+const userRouter=express.Router()
+const Usermodel=require("../Models/user.model")
 
-const Usermodel = require("../Models/User..model");
 
-
-
-const UserRouter=express.Router();
-
-UserRouter.post("/signup",async(req,res)=>{
-    const {email,password,name ,age}=req.body;
-    const Presentuser=await Usermodel.findOne({email});
-    if(Presentuser){
-      res.send("username already exist,try another user name")
-    }
+userRouter.post("/signup",async(req,res)=>{
+    const{email,password}=req.body;
     try{
-         
-            bcrypt.hash(password, 5, async function(err, hash) {
-                const user=new Usermodel({email,password:hash,name,age})
+        let presentuser=await Usermodel.findOne({email});
+        if(presentuser){
+            res.send("username already exist")
+        }else{
+
+            bcrypt.hash(password, 4, async function(err, hash) {
+                const user=new Usermodel({email,password:hash})
                 await user.save();
-                res.send("signup successfully")
+                res.send("Singup Succefully")
+             
             });
 
-          
+        }
+      
+
     }
     catch(err){
-        console.log(err)
-        res.send(" error in sign up ,try again later");
+            console.log(err)
+            res.send("error in signup")
     }
 
 })
-
-
-UserRouter.post("/login",async(req,res)=>{
-    const{email,password}=req.body;
+userRouter.post("/login",async(req,res)=>{
+    const {email,password}=req.body;
+    const presentuser=await Usermodel.find({email});
+    if(presentuser.length===0){
+        res.send("wrong email")
+    }
+    const hash_password=presentuser[0].password;
+    const userId=presentuser[0]._id;
     try{
-        const checkusers=await Usermodel.find({email});
-        if(checkusers.length>0){
-           const hash_password=checkusers[0].password;
-          
-           bcrypt.compare(password, hash_password).then(function(result) {
+        bcrypt.compare(password, hash_password, function(err, result) {
             if(result){
-                const token = jwt.sign({ "userId":checkusers[0]._id }, 'hush');
-                res.send({"msg":"Login successfull","token" : token})
+                const token= jwt.sign({ "userId":userId }, 'shhhhh');
+                if(token){
+                    res.send({"mess":"longin succefull",token:token})
+                }else{
+                    res.send("error in getting token")
+                }
+
             }else{
-                res.send("Login failed")
+                res.send("password or username is wrong")
             }
         });
 
-        }
 
     }
     catch(err){
-        console.log(err);
-        res.send("login failed ,try again later");
+console.log(err);
+res.send("error in login")
+
     }
-   
+})
 
-});
-
-
-module.exports=UserRouter
-
-
-
+module.exports=userRouter
