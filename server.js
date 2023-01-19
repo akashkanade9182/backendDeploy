@@ -4,7 +4,7 @@ const cors=require("cors")
 
 
 const connection=require("./Config/db");
-const userRouter = require("./Routes/User.Route");
+const userRouter = require("./Routes/user");
 
 
 const app=express();
