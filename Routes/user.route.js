@@ -1,10 +1,9 @@
-const express = require("express")
+const express=require("express")
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
 
 const Usermodel = require("../Models/user.model")
-const Calmodel = require("../Models/calculate.model")
 
 const userRouter = express.Router();
 const Authenticate=require("../Middleware/Authentication")
@@ -18,11 +17,18 @@ userRouter.post("/register", async (req, res) => {
         if (presentuser) {
             res.send("email is already link to another account ")
         } else {
+            let useremail=email.split("@");
+            var usertype;
+            if(useremail[1]==="masaischool.com"){
+                usertype="admin"
+            }else{
+                usertype="user"
+            }
 
             bcrypt.hash(password, 4, async function (err, hash) {
-                const user = new Usermodel({ name,email, password: hash })
+                const user = new Usermodel({ name,email, password: hash ,usertype})
                 await user.save();
-                res.send("Singup Succefully")
+                res.send("signup successfully")
 
             });
 
@@ -45,12 +51,19 @@ userRouter.post("/login", async (req, res) => {
     }
     const hash_password = presentuser[0].password;
     const userId = presentuser[0]._id;
+    const useremail=email.split("@")
+    var usertype;
+    if(useremail[1]==="masaischool.com"){
+        usertype="admin"
+    }else{
+        usertype="user"
+    }
     try {
         bcrypt.compare(password, hash_password, function (err, result) {
             if (result) {
                 const token = jwt.sign({ "userId": userId }, 'shh');
                 if (token) {
-                    res.send({ "mess": "longin succefull", token: token })
+                    res.send({ "mess": "longin succefull", token: token,usertype })
                 } else {
                     res.send("error in getting token")
                 }
@@ -71,40 +84,10 @@ userRouter.post("/login", async (req, res) => {
 
 
 
-userRouter.post("/calculate",(req,res)=>{
-    const{amount,interest,year}=req.body;
-   
-   const P = amount
-   const  i =interest / 100
-   const n = year
-   const c= ((1+i)**n)-1
-   const F= P*(c/i)
-   const Iamount=amount*year;
-   const Ginterest=F-Iamount;
-
-   res.send({totalInvestmentAmount:Math.floor(Ginterest),
-  totalInterestGained:Math.floor(Ginterest),
-  totalMaturityValue:Math.floor(F)})
 
 
 
 
-})
-
-
-
-userRouter.use(Authenticate);
-
-userRouter.get("/getProfile",async(req,res)=>{
-    const userId=req.body.userId
-    let user=await Usermodel.findOne({_id:userId})
-    console.log(user)
-    if(user){
-        res.send(user)
-    }else{
-        res.send("user is not found")
-    }
-})
 
 
 
