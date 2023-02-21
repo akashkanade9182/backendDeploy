@@ -1,10 +1,10 @@
 const express=require("express");
-const cors=require("cors")
+const cors=require("cors");
 
 
 const connection=require("./Config/db")
-const userRouter=require("./Routes/user.route.js");
-const quetionRouter=require("./Routes/quetion.route")
+const bloguserRouter=require("./routes/user.router.js");
+const blogRouter=require("./routes/blog.router");
 
 
 const app=express();
@@ -14,14 +14,18 @@ app.use(cors({
 }))
 
 
-app.use("/",userRouter);
-app.use("/quetion",quetionRouter)
+
+
+app.use("/bloguser",bloguserRouter);
+app.use("/blogs",blogRouter);
 
 
 app.listen(7000,async()=>{
-   try{ await connection;
-    console.log("server is running on port 7000")}
-    catch(e){
-        console.log("error in mongodb connection")
-    }
+ try{
+ await connection;
+ console.log("server running on port 7000")
+ }
+ catch{
+    console.log("error in server connection")
+ }
 })
