@@ -1,28 +1,34 @@
 const jwt = require("jsonwebtoken")
 
-const Authenticate=(req,res,next)=>{
 
-    const token=req.headers?.authorization?.split(" ")[1]
+
+
+const Authentication = (req,res,next) => {
+
+     const { authorization } = req.headers;
+     if (!authorization) {
+          return res.status(401).json({ error: "You must have logged in 1" })
+      }
+     const token=req.headers?.authorization?.split(" ")[1]
+     
+
      if(token){
-        const decoded = jwt.verify(token, 'shh');
-        if(decoded){
-            const userId = decoded.userId
-            req.body.author = userId;
-            req.body.name=decoded.name;
-            req.body.avatar=decoded.avatar;
-            next()
-        }
-        else{
-            res.status(400).send("Please login")
-        }  
-
-     }else{
-        res.status(400).send("please login")
-     }
-
-
-
+         let decoded = jwt.verify(token, 'shh');
+          if(decoded){
+            
+              const userId = decoded.userId
+              req.body.user = userId;
+            
+              next()
+          }
+          else{
+             res.status(401).json({ error: "You must have logged in 2" })
+          }  
   
-
+       }else{
+          res.status(401).send("please login")
+       }
+      //  res.status(400).send("middlware checking")
 }
-module.exports=Authenticate;
+
+module.exports= Authentication;
