@@ -4,6 +4,7 @@ const cors = require("cors")
 const connection=require("./Config/db")
 const instauserRouter=require("./Routes/user.route")
 const instapostRoute=require("./Routes/instapost.route")
+const CourseRoute=require("./Routes/Couse.route")
 
 const app=express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(cors({
 
  app.use("/instauser",instauserRouter)
  app.use("/instapost",instapostRoute)
+  app.use("/getcourse",CourseRoute);
 
 
  app.listen(7000,async()=>{
