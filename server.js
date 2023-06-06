@@ -8,13 +8,16 @@ const CourseRoute = require("./Routes/Couse.route")
 const accountRouter = require("./Routes/Account.Route")
 const addsRoute = require("./Routes/Adds.route")
 const companyRoute = require("./Routes/Company.route")
+const ProjectRoute=require("./Routes/Project.route.js")
+const projectuserRouter=require("./Routes/Projectuser.route")
 
 const app = express();
 app.use(express.json());
 app.use(cors({
     origin: "*"
 }))
-
+app.use("/project",ProjectRoute)
+app.use("/projectuser",projectuserRouter)
 app.use("/instauser", instauserRouter)
 app.use("/instapost", instapostRoute)
 app.use("/getcourse", CourseRoute);
