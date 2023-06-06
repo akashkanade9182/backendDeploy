@@ -87,8 +87,14 @@ ProjectRoute.patch("/update/:id",async(req,res)=>{
 ProjectRoute.get("/search",async(req,res)=>{
      const page = parseInt(req.query.page) || 1;
      const limit = parseInt(req.query.limit) || 10; 
-     
-     req.query.sort==="deparment" && (sortQuery=department);
+     let sortQuery={}
+     req.query.sort==="deparment" && (sortQuery[department]=1);
+     req.query.sort==="location" && (sortQuery[location]=1);
+     req.query.sort==="priority" && (sortQuery[priority]=1);
+     req.query.sort==="title" && (sortQuery[title]=1);
+     req.query.sort==="category" && (sortQuery[category]=1);
+
+
 
      const searchQuery=req.query.searchtext || "";
      try{
@@ -111,7 +117,7 @@ ProjectRoute.get("/search",async(req,res)=>{
         
        
         const results = await Projectmodel.find(query)
-        .sort({ sortQuery: 1 }) 
+        .sort(sortQuery) 
         .skip((page - 1) * limit)
         .limit(limit);
 
