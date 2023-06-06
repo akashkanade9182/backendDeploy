@@ -68,7 +68,7 @@ ProjectRoute.patch("/update/:id",async(req,res)=>{
              const totalPages = Math.ceil(totalCount / limit);
              
             
-             const results = await Projectmodel.find(query)
+             const results = await Projectmodel.find()
              .sort({ sortQuery: 1 }) 
              .skip((page - 1) * limit)
              .limit(limit);
