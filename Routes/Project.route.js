@@ -9,8 +9,8 @@ ProjectRoute.get("/getall",async(req,res)=>{
      try{
           const totalCount = await Projectmodel.countDocuments();
           const totalPages = Math.ceil(totalCount / 10); 
-        const data=await Projectmodel.find().skip((page - 1) * 10)
-        .limit(10);
+        const data=await Projectmodel.find().skip((page - 1) * 5)
+        .limit(5);
        return res.status(200).send({data,totalCount, currentPage: page,totalPages});
       }
      catch{
@@ -43,14 +43,25 @@ ProjectRoute.post("/add",async(req,res)=>{
 ProjectRoute.patch("/update/:id",async(req,res)=>{
      const Id=req.params.id;
      const page=req.query.page ||1;
-     const limit=req.query.limit || 10;
+     const limit=req.query.limit || 5;
+     let sortQuery={}
+     req.query.sort==="deparment" && (sortQuery={department:1});
+     req.query.sort==="location" && (sortQuery={location:1});
+     req.query.sort==="priority" && (sortQuery={priority:1});
+     req.query.sort==="title" && (sortQuery={title:1});
+     req.query.sort==="category" && (sortQuery={category:1});
+     req.query.sort==="reason" && (sortQuery={reason:1});
+     req.query.sort==="type" && (sortQuery={type:1});
+      req.query.sort==="division" && (sortQuery={division:1});
+console.log(sortQuery)
+
+
+
      const searchQuery=req.query.searchtext || "";
-     const sorttQuery=req.query.sort || "priority";
+
      
      try{
-          console.log("start to update")
           await Projectmodel.findByIdAndUpdate({_id:Id},req.body);
-          console.log("status udpate")
           const query = {
                $or: [
                  { title: { $regex: searchQuery, $options: 'i' } },
@@ -68,11 +79,10 @@ ProjectRoute.patch("/update/:id",async(req,res)=>{
              const totalPages = Math.ceil(totalCount / limit);
              
             
-             const results = await Projectmodel.find()
-             .sort({ sortQuery: 1 }) 
+             const results = await Projectmodel.find(query)
+             .sort(sortQuery) 
              .skip((page - 1) * limit)
              .limit(limit);
-             console.log("data get")
      
              res.status(200).send({data:results,totalCount, currentPage: page,totalPages})
 
@@ -88,15 +98,20 @@ ProjectRoute.get("/search",async(req,res)=>{
      const page = parseInt(req.query.page) || 1;
      const limit = parseInt(req.query.limit) || 10; 
      let sortQuery={}
-     req.query.sort==="deparment" && (sortQuery[department]=1);
-     req.query.sort==="location" && (sortQuery[location]=1);
-     req.query.sort==="priority" && (sortQuery[priority]=1);
-     req.query.sort==="title" && (sortQuery[title]=1);
-     req.query.sort==="category" && (sortQuery[category]=1);
+     req.query.sort==="deparment" && (sortQuery={department:1});
+     req.query.sort==="location" && (sortQuery={location:1});
+     req.query.sort==="priority" && (sortQuery={priority:1});
+     req.query.sort==="title" && (sortQuery={title:1});
+     req.query.sort==="category" && (sortQuery={category:1});
+     req.query.sort==="reason" && (sortQuery={reason:1});
+     req.query.sort==="type" && (sortQuery={type:1});
+      req.query.sort==="division" && (sortQuery={division:1});
+console.log(sortQuery)
 
 
 
      const searchQuery=req.query.searchtext || "";
+     console.log({searchQuery,sortQuery})
      try{
   
      const query = {
@@ -115,7 +130,6 @@ ProjectRoute.get("/search",async(req,res)=>{
         const totalCount = await Projectmodel.countDocuments(query);
         const totalPages = Math.ceil(totalCount / limit);
         
-       
         const results = await Projectmodel.find(query)
         .sort(sortQuery) 
         .skip((page - 1) * limit)
@@ -129,6 +143,42 @@ ProjectRoute.get("/search",async(req,res)=>{
      catch(err){
           console.log(err);
           res.status(400).send("error in getting search result")
+     }
+
+
+})
+
+
+ProjectRoute.get("/sorting",async(req,res)=>{
+     const page = parseInt(req.query.page) || 1;
+     const limit = parseInt(req.query.limit) || 10; 
+     let sortQuery={}
+     req.query.sort==="deparment" && (sortQuery={department:1});
+     req.query.sort==="location" && (sortQuery={location:1});
+     req.query.sort==="priority" && (sortQuery={priority:1});
+     req.query.sort==="title" && (sortQuery={title:1});
+     req.query.sort==="category" && (sortQuery={category:1});
+     req.query.sort==="reason" && (sortQuery={reason:1});
+console.log(sortQuery)
+     try{
+  
+        const totalCount = await Projectmodel.countDocuments();
+        const totalPages = Math.ceil(totalCount / limit);
+        
+       
+        const results = await Projectmodel.find()
+        .sort(sortQuery) 
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+        res.status(200).send({data:results, currentPage: page,totalCount,totalPages})
+    
+   
+         
+      }
+     catch(err){
+          console.log(err);
+          res.status(400).send("error in sorting result")
      }
 
 
