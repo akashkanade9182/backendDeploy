@@ -8,7 +8,7 @@ ProjectRoute.get("/getall",async(req,res)=>{
      const page = parseInt(req.query.page) || 1;
      try{
           const totalCount = await Projectmodel.countDocuments();
-          const totalPages = Math.ceil(totalCount / 10); 
+          const totalPages = Math.ceil(totalCount / 5); 
         const data=await Projectmodel.find().skip((page - 1) * 5)
         .limit(5);
        return res.status(200).send({data,totalCount, currentPage: page,totalPages});
