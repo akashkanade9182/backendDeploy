@@ -96,7 +96,7 @@ console.log(sortQuery)
 
 ProjectRoute.get("/search",async(req,res)=>{
      const page = parseInt(req.query.page) || 1;
-     const limit = parseInt(req.query.limit) || 10; 
+     const limit = parseInt(req.query.limit) || 5; 
      let sortQuery={}
      req.query.sort==="deparment" && (sortQuery={department:1});
      req.query.sort==="location" && (sortQuery={location:1});
