@@ -8,27 +8,27 @@ const ProjectUsermodel = require("../Models/Projectuser.model");
 
 projectuserRouter.post("/login", async (req, res) => {
 
-     if ( !req.body.email || !req.body.password) {
-          res.status(422).json({
-               Success: false,
-               Message : "please fill all details"
-               })
-     }
+
      const { email, password } = req.body;
 
 
      try {
-        
-               bcrypt.hash(password, 4, async function (err, hash) {
-                    const user = new ProjectUsermodel({ email, password: hash})
-                    await user.save();
-                    res.status(200).send({
-                         Success: true,
-                         Message : "Valid User"
-                         }
-                         )
+        if(email==="akash@gmail.com" && password==="akash")
+        {
+          res.status(200).send({
+               Success: true,
+               Message : "Valid User"
+               }
+               )
+        }
+        else{
+          res.status(200).send({
+               Success: false,
+               Message : "Invalid User"
+               })
+        }
 
-               });
+                   
      }
      catch (err) {
           console.log(err)
