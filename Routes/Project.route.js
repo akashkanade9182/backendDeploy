@@ -191,8 +191,15 @@ data.totalProject=await Projectmodel.countDocuments();
 data.closeProject=await Projectmodel.countDocuments({status:"Close"});
 data.runningProject=await Projectmodel.countDocuments({status:"Start"});
 data.cancelProject=await Projectmodel.countDocuments({status:"Cancel"});
-var currentDate = new Date();
-data.delayProject=await Projectmodel.countDocuments({ endDate: { $lt: currentDate } });
+const currentDate = new Date();
+
+const year = currentDate.getFullYear();
+const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+const day = String(currentDate.getDate()).padStart(2, "0");
+
+const formattedDate = `${year}-${month}-${day}`;
+console.log(formattedDate)
+data.delayProject=await Projectmodel.countDocuments({ endDate: { $lt: formattedDate } });
 let datasetOne=[];
 datasetOne[0]=await Projectmodel.countDocuments({department:"Quality"});
 datasetOne[1]=await Projectmodel.countDocuments({department:"Maintenance"});
