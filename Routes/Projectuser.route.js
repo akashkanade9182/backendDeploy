@@ -13,8 +13,9 @@ projectuserRouter.post("/login", async (req, res) => {
 
 
      try {
-        if(email==="akash@gmail.com" && password==="akash")
-        {
+const ProjectUsermodel = require("../Models/Projectuser.model");
+        let preentuser= await ProjectUsermodel.find({email,password})
+       if(preentuser.length>0) {
           res.status(200).send({
                Success: true,
                Message : "Valid User"
